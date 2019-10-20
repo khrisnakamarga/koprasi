@@ -99,7 +99,7 @@ def load_file(data_frame):
 def generate_report(nik_dict):
     workbook = xlsxwriter.Workbook('nik_report.xlsx')
     date_format = workbook.add_format({'num_format': 'dd/mm/yy'})
-    money_format = workbook.add_format({'num_format': 'Rp#,##.,00'})
+    money_format = workbook.add_format({'num_format': 'Rp#,##0.00'})
 
     for nik in nik_dict.keys():
         print("\n\nNIK {}".format(nik))
@@ -124,8 +124,6 @@ def generate_report(nik_dict):
                     curr_sheet.write(row, col + 1, item.jumlah, money_format)
                     curr_sheet.write(row, col + 2, item.tipe)
                     curr_sheet.write(row, col + 3, employee_balance.update(date, item.tipe, item.jumlah), money_format)
-
-        # formatting Rupiah
 
     workbook.close()
 
