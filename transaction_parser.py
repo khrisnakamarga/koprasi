@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from pandas import ExcelWriter, ExcelFile
+import xlsxwriter
 
 df = pd.read_excel('toBeParsed.xlsx', sheet_name='Kas')
 df = df[np.isfinite(df['NIK'])]  # dropping nonexistent NIKs
@@ -24,9 +24,24 @@ for index, row, in df.iterrows():
     curr_nik_dict.append({'Transaksi': row['Transaksi']})
 
 
-print(nik_dict)
+# print(nik_dict)
 
-# for NIK in NIK_column:
-#     if NIK is not in dict: create a new excel file first,
-#     else:
-#         add or subtract from "saldo" (grouping them to dates)
+workbook = xlsxwriter.Workbook('nik_report.xlsx')
+
+for nik in nik_dict.keys():
+    curr_sheet = workbook.add_worksheet("NIK {}".format(nik))
+    curr_sheet.write(0, 0, "Tanggal")
+    curr_sheet.write(0, 1, "Jumlah Transaksi")
+    curr_sheet.write(0, 2, "Tipe Transaksi")
+    row = 0
+    col = 0
+    for date in nik_dict[nik].keys():
+        row += 1
+        curr_sheet.write(row, col, date)
+        item = nik_dict[nik][date]
+        print(item)
+        curr_sheet.write(row, col + 1, item[0]["Jumlah"])
+        curr_sheet.write(row, col + 2, item[1]["Transaksi"])
+        row += 1
+
+workbook.close()
